@@ -1,0 +1,45 @@
+version: "3.8"
+x-logging: &default-logging
+  options:
+    max-size: '10m'
+    max-file: '1'
+  driver: json-file
+services:
+    project-php:
+        container_name: project-php
+        build:
+            context: ../project-php
+        working_dir: /var/www/html/project-php
+        command: >
+            bash -c "cp ./config/autoload/local.base.php ./config/autoload/local.php && supervisord -c /etc/supervisord.conf"
+        volumes:
+            - ../project-php/public:/var/www/html/project-php/public     
+        networks:
+            - default
+            - services
+        environment:
+            PHP_XDEBUG_ENABLED: ${XDEBUG_ENABLE}
+            XDEBUG_CONFIG: remote_host=${XDEBUG_REMOTE_HOST}
+        logging: *default-logging    
+    project-node:
+        container_name: project-node
+        build:
+            context: ../project-node
+        working_dir: /code
+        volumes:
+            - ../project-node:/project-node
+        environment:
+            NODE_ENV: development
+        command: > 
+            bash -c "cp config.example.js config.js && gulp"
+        networks:
+            - default
+            - services
+        logging: *default-logging        
+networks:
+  default:
+    name: projects
+    driver: bridge
+  services: 
+    external:
+        name: services

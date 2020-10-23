@@ -1,0 +1,74 @@
+version: "3.8"
+x-logging: &default-logging
+  options:
+    max-size: '10m'
+    max-file: '1'
+  driver: json-file
+services:
+  portainer:
+    image: portainer/portainer:latest
+    container_name: portainer
+    restart: on-failure
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/volumes/portainer:/data
+    logging: *default-logging
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    command: mysqld --sql_mode='NO_ENGINE_SUBSTITUTION'
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - 3306
+    volumes:
+      - /var/volumes/mysql:/var/lib/mysql
+    logging: *default-logging    
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: on-failure
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    ports:
+      - "27017:27017"      
+    volumes:
+      - /var/volumes/mongodb:/data/db
+    logging: *default-logging
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: on-failure
+    volumes:
+      - /var/volumes/redis:/data
+    ports:
+      - "6379:6379"
+    logging: *default-logging
+  elasticsearch:
+    container_name: elasticsearch
+    build:
+      context: ./elasticsearch
+    volumes:
+      - /var/volumes/elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+  nginx:
+      container_name: nginx
+      build:
+          context: ./nginx
+      ports:
+          - 80:80
+          - 443:443
+      networks:
+          - projects
+networks:
+  default: 
+    name: services
+    driver: bridge
+  projects: 
+    external:
+        name: projects

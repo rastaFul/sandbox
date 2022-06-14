@@ -6,7 +6,8 @@ case "$1" in
         echo "Clonando os projetos"
         cd $APPS_DIR
         echo "Clonando projetos..."
-        git clone <adicionar o repositório>
+        # Descomentar a linha abaixo para clonar projetos
+        # git clone <adicionar o repositório>
         echo "Projeto baixado"
         echo "Concluído"
         exit 0;

@@ -48,6 +48,19 @@ services:
     ports:
       - "6379:6379"
     logging: *default-logging
+  rabbitmq:
+      image: rabbitmq:3-management
+      container_name: rabbitmq
+      ports:
+          - "15672:15672"
+          - "5672:5672"
+          - "15693:15692"
+      volumes:
+          - /var/volumes/rabbitmq:/var/lib/rabbitmq
+      env_file:
+        - .env
+      logging: *default-logging
+
   elasticsearch:
     container_name: elasticsearch
     build:
@@ -63,12 +76,6 @@ services:
       ports:
           - 80:80
           - 443:443
-      networks:
-          - projects
-networks:
   default: 
     name: services
     driver: bridge
-  projects: 
-    external:
-        name: projects

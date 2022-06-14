@@ -68,6 +68,16 @@ Consultar a documentação do banco de dados que deseja realizar a restauração
 
 - Por convenção, o projeto sandbox deve estar localizado no caminho `/home/$USER/projects/`. Isso facilitará as configurações, evitando a necessidade de editar o caminho padrão dos projetos(Está na primeira linha do script sandbox.sh)
 
+- Para executar o nginx, fazendo proxy reverso com os projetos, é necessário adicionar a rede de projetos no arquivo services.yml.
+Para isto, basta adicionar na sessão network a seguinte configuração:
+```  
+projects: 
+    external:
+        name: projects
+```
+
+E adicionar esta rede ao serviço do nginx (Os outros serviços estão utilizando a rede default, basta copiar essa configuração e substituir para o nome da projects)
+
 ## FAQ
 
 - Nginx não pode ser executado pois a porta 80 já está em uso: 

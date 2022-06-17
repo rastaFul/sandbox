@@ -75,6 +75,7 @@ services:
       ports:
           - 80:80
           - 443:443
+networks:    
   default: 
     name: services
     driver: bridge

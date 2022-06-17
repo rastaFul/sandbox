@@ -78,6 +78,8 @@ projects:
 
 E adicionar esta rede ao serviço do nginx (Os outros serviços estão utilizando a rede default, basta copiar essa configuração e substituir para o nome da projects)
 
+- Para resetar a senha do portainer, seguir as seguintes instruções: [Reset de senha](https://omar2cloud.github.io/rasp/psswd/)
+
 ## FAQ
 
 - Nginx não pode ser executado pois a porta 80 já está em uso: 

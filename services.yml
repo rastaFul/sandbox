@@ -60,7 +60,6 @@ services:
       env_file:
         - .env
       logging: *default-logging
-
   elasticsearch:
     container_name: elasticsearch
     build:

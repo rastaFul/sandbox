@@ -6,7 +6,7 @@ x-logging: &default-logging
   driver: json-file
 services:
   portainer:
-    image: portainer/portainer:latest
+    image: portainer/portainer-ce:latest
     container_name: portainer
     restart: on-failure
     ports:

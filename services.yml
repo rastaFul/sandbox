@@ -16,14 +16,14 @@ services:
       - /var/volumes/portainer:/data
     logging: *default-logging
   mysql:
-    image: mysql:latest
+    image: mysql:${MYSQL_TAG}
     container_name: mysql
     command: mysqld --sql_mode='NO_ENGINE_SUBSTITUTION'
     restart: on-failure
-    env_file:
-      - .env
     ports:
-      - 3306
+        - 3306:3306
+    env_file:
+      - .mysql.env
     volumes:
       - /var/volumes/mysql:/var/lib/mysql
     logging: *default-logging    
@@ -58,7 +58,7 @@ services:
       volumes:
           - /var/volumes/rabbitmq:/var/lib/rabbitmq
       env_file:
-        - .env
+        - .rabbitmq.env
       logging: *default-logging
   elasticsearch:
     container_name: elasticsearch

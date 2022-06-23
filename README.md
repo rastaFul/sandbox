@@ -12,9 +12,17 @@ Para utilizar o projeto Sandbox é preciso ter o Docker e o Docker composer inst
 
 `Acesse a documentação do docker para obter informações sobre a instalação desses serviços no seu ambiente local(Os links com referência para o método de instalação recomendado está no final dessa documentação)`
 
+## Variáveis de ambiente
+
+Para executar alguns serviços, nós precisamos passar alguns parâmetros de configurações no deploy do container. Os serviços que precisam de variáveis que não são fixas, haverá uma chave em suas configurações no arquivo `services.yml` chamada `env_file`. Para preencher essas variáveis, crie um arquivo com o mesmo nome descrito dentro dessa chave(`env_file`) e preencha com as variáveis necessárias
+
+> Dica: Há um arquivo chamado `.env.schema` na raiz do projeto com todas as variáveis dos serviços dessa sandbox, copie apenas as variáveis do serviço que deseja executar para dentro do seu respectivo arquivo de variáveis. Para identificar as variáveis de cada serviço isolado, olhe o comentário com o nome do serviço.
+
+Além das variáveis de ambientes de cada serviço, também há variáveis que serão utilizadas para configurar o próprio arquivo de configuração do docker-compose, por exemplo, para definir a tag específica de uma determinada imagem. Para essas variáveis, copie as variáveis da primeira sessão do arquivo `.env.schema`, crie um arquivo chamado `.env`, cole as variáveis e substituas conforme suas necessidades.
+
 ## Stack Serviços
 
-Aqui está agrupado todos os serviços que são necessários para a execução dos projetos, que são:
+Aqui está agrupado todos os serviços que são necessários para a execução dos projetos de exem plo, que são:
 
 - Mongo latest
 - Redis latest

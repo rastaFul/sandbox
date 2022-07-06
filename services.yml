@@ -6,11 +6,11 @@ x-logging: &default-logging
   driver: json-file
 services:
   portainer:
-    image: portainer/portainer-ce:latest
+    image: portainer/portainer-ce:${PORTAINER_TAG}
     container_name: portainer
     restart: on-failure
     ports:
-      - "9000:9000"
+      - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/volumes/portainer:/data
@@ -28,33 +28,44 @@ services:
       - /var/volumes/mysql:/var/lib/mysql
     logging: *default-logging    
   mongo:
-    image: mongo:latest
+    image: mongo:${MONGO_TAG}
     container_name: mongo
+    command: sh -c "mongod --bind_ip_all --profile 1 --slowms 60000 --slowOpSampleRate 1.0"
     restart: on-failure
     environment:
       - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
     ports:
-      - "27017:27017"      
+      - 27017:27017     
     volumes:
       - /var/volumes/mongodb:/data/db
     logging: *default-logging
   redis:
-    image: redis:latest
+    image: redis:${REDIS_TAG}
     container_name: redis
     restart: on-failure
     volumes:
       - /var/volumes/redis:/data
     ports:
-      - "6379:6379"
+      - 6379:6379
     logging: *default-logging
+  redisinsight:
+    image: redislabs/redisinsight:${REDIS_INSIGHT_TAG}
+    container_name: redisinsight
+    restart: on-failure
+    volumes:
+      - /var/volumes/redisinsight:/db
+    ports:
+      - 8001:8001
+    logging: *default-logging
+    links: 
+      - redis
   rabbitmq:
-      image: rabbitmq:3-management
+      image: rabbitmq:{RABBITMQ_TAG}
       container_name: rabbitmq
       ports:
-          - "15672:15672"
-          - "5672:5672"
-          - "15693:15692"
+          - 15672:15672
+          - 5672:5672
+          - 15693:15692
       volumes:
           - /var/volumes/rabbitmq:/var/lib/rabbitmq
       env_file:

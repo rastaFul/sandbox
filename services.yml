@@ -71,6 +71,14 @@ services:
       env_file:
         - .rabbitmq.env
       logging: *default-logging
+  prometheus:
+      image: prom/prometheus:${PROMETHEUS_TAG}
+      container_name: prometheus
+      ports:
+          - 9090:9090
+      volumes:
+          - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      logging: *default-logging
   elasticsearch:
     container_name: elasticsearch
     build:

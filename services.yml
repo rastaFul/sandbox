@@ -79,6 +79,12 @@ services:
       volumes:
           - ./prometheus.yml:/etc/prometheus/prometheus.yml
       logging: *default-logging
+  grafana:
+      image: grafana/grafana:${GRAFANA_TAG}
+      container_name: grafana
+      ports:
+          - 3000:3000
+      logging: *default-logging      
   elasticsearch:
     container_name: elasticsearch
     build:
@@ -87,6 +93,23 @@ services:
       - /var/volumes/elasticsearch:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+  localstack:
+    container_name: "${LOCALSTACK_CONTAINER_NAME-localstack}"
+    image: localstack/localstack:${LOCALSTACK_TAG-latest}
+    ports:
+      - 127.0.0.1:4510-4559:4510-4559  # external service port range
+      - 127.0.0.1:4566:4566            # LocalStack Edge Proxy
+    environment:
+      - DEBUG=${DEBUG-}
+      - DATA_DIR=${DATA_DIR-}
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR-}
+      - HOST_TMP_FOLDER=${TMPDIR:-/var/volumes}localstack
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    env_file: 
+      - .localstack.env
+    volumes:
+      - "${TMPDIR:-/var/volumes}/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"      
   nginx:
       container_name: nginx
       build:

@@ -93,6 +93,10 @@ services:
       - /var/volumes/elasticsearch:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+  k6:
+      image: grafana/k6:${K6_TAG}
+      container_name: k6
+      logging: *default-logging         
   localstack:
     container_name: "${LOCALSTACK_CONTAINER_NAME-localstack}"
     image: localstack/localstack:${LOCALSTACK_TAG-latest}

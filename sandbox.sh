@@ -1,4 +1,3 @@
-APPS_DIR="/home/$USER/projects"
 echo $1 $2 $3
 
 case "$1" in

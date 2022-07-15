@@ -6,7 +6,7 @@ x-logging: &default-logging
   driver: json-file
 services:
   portainer:
-    image: portainer/portainer-ce:${PORTAINER_TAG}
+    image: portainer/portainer-ce:${PORTAINER_TAG-latest}
     container_name: portainer
     restart: on-failure
     ports:
@@ -16,7 +16,7 @@ services:
       - /var/volumes/portainer:/data
     logging: *default-logging
   mysql:
-    image: mysql:${MYSQL_TAG}
+    image: mysql:${MYSQL_TAG-latest}
     container_name: mysql
     command: mysqld --sql_mode='NO_ENGINE_SUBSTITUTION'
     restart: on-failure
@@ -28,7 +28,7 @@ services:
       - /var/volumes/mysql:/var/lib/mysql
     logging: *default-logging    
   mongo:
-    image: mongo:${MONGO_TAG}
+    image: mongo:${MONGO_TAG-latest}
     container_name: mongo
     command: sh -c "mongod --bind_ip_all --profile 1 --slowms 60000 --slowOpSampleRate 1.0"
     restart: on-failure
@@ -40,7 +40,7 @@ services:
       - /var/volumes/mongodb:/data/db
     logging: *default-logging
   redis:
-    image: redis:${REDIS_TAG}
+    image: redis:${REDIS_TAG-latest}
     container_name: redis
     restart: on-failure
     volumes:
@@ -49,7 +49,7 @@ services:
       - 6379:6379
     logging: *default-logging
   redisinsight:
-    image: redislabs/redisinsight:${REDIS_INSIGHT_TAG}
+    image: redislabs/redisinsight:${REDIS_INSIGHT_TAG-latest}
     container_name: redisinsight
     restart: on-failure
     volumes:
@@ -60,7 +60,7 @@ services:
     links: 
       - redis
   rabbitmq:
-      image: rabbitmq:${RABBITMQ_TAG}
+      image: rabbitmq:${RABBITMQ_TAG-latest}
       container_name: rabbitmq
       ports:
           - 15672:15672
@@ -72,7 +72,7 @@ services:
         - .rabbitmq.env
       logging: *default-logging
   prometheus:
-      image: prom/prometheus:${PROMETHEUS_TAG}
+      image: prom/prometheus:${PROMETHEUS_TAG-latest}
       container_name: prometheus
       ports:
           - 9090:9090
@@ -80,7 +80,7 @@ services:
           - ./prometheus.yml:/etc/prometheus/prometheus.yml
       logging: *default-logging
   grafana:
-      image: grafana/grafana:${GRAFANA_TAG}
+      image: grafana/grafana:${GRAFANA_TAG-latest}
       container_name: grafana
       ports:
           - 3000:3000
@@ -94,12 +94,12 @@ services:
     ports:
       - 9200:9200
   k6:
-      image: grafana/k6:${K6_TAG}
+      image: grafana/k6:${K6_TAG-latest}
       container_name: k6
       logging: *default-logging         
   localstack:
-    container_name: "${LOCALSTACK_CONTAINER_NAME-localstack}"
     image: localstack/localstack:${LOCALSTACK_TAG-latest}
+    container_name: localstack
     ports:
       - 127.0.0.1:4510-4559:4510-4559  # external service port range
       - 127.0.0.1:4566:4566            # LocalStack Edge Proxy
@@ -107,13 +107,13 @@ services:
       - DEBUG=${DEBUG-}
       - DATA_DIR=${DATA_DIR-}
       - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR-}
-      - HOST_TMP_FOLDER=${TMPDIR:-/var/volumes}localstack
+      - HOST_TMP_FOLDER=${TMPDIR:-/var/volumes}/localstack
       - DOCKER_HOST=unix:///var/run/docker.sock
     env_file: 
       - .localstack.env
     volumes:
       - "${TMPDIR:-/var/volumes}/localstack:/tmp/localstack"
-      - "/var/run/docker.sock:/var/run/docker.sock"      
+      - "/var/run/docker.sock:/var/run/docker.sock"
   nginx:
       container_name: nginx
       build:

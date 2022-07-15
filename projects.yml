@@ -32,6 +32,8 @@ services:
             NODE_ENV: development
         command: > 
             bash -c "cp config.example.js config.js && gulp"
+        # If instead of using the network via the docker interface, you prefer to use it in host mode, uncomment the line below and remove the networks key.    
+        #network_mode: host
         networks:
             - default
             - services

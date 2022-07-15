@@ -26,7 +26,18 @@ services:
       - .mysql.env
     volumes:
       - /var/volumes/mysql:/var/lib/mysql
-    logging: *default-logging    
+    logging: *default-logging
+  cloud-beaver: #MySQL client
+    image: dbeaver/cloudbeaver:${CLOUD_BEAVER_TAG-latest}
+    container_name: cloud-beaver
+    restart: on-failure
+    ports:
+        - 3360:8978
+    volumes:
+      - /var/volumes/cloudbeaver:/opt/cloudbeaver/workspace
+    links:
+      - mysql      
+    logging: *default-logging        
   mongo:
     image: mongo:${MONGO_TAG-latest}
     container_name: mongo
@@ -39,6 +50,14 @@ services:
     volumes:
       - /var/volumes/mongodb:/data/db
     logging: *default-logging
+  mongo-express: #Mongo Client
+    image: mongo-express:${MONGO_EXPRESS_TAG-latest}
+    ports:
+      - 8081:8081
+    env_file:
+      - .mongo-express.env
+    links:
+      - mongo 
   redis:
     image: redis:${REDIS_TAG-latest}
     container_name: redis
@@ -48,7 +67,7 @@ services:
     ports:
       - 6379:6379
     logging: *default-logging
-  redisinsight:
+  redisinsight: #Redis Client
     image: redislabs/redisinsight:${REDIS_INSIGHT_TAG-latest}
     container_name: redisinsight
     restart: on-failure
